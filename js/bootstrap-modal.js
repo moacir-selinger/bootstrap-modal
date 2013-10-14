@@ -1,5 +1,6 @@
 /* ===========================================================
  * bootstrap-modal.js v2.2.0
+ * http://jschr.github.io/bootstrap-modal/
  * ===========================================================
  * Copyright 2012 Jordan Schroter
  *
@@ -37,8 +38,7 @@
 
 			this.options = options;
 
-			this.$element = $(element)
-				.delegate('[data-dismiss="modal"]', 'click.dismiss.modal', $.proxy(this.hide, this));
+			this.$element = $(element);
 
 			this.options.remote && this.$element.find('.modal-body').load(this.options.remote, function () {
 				var e = $.Event('loaded');
@@ -361,14 +361,23 @@
 	* ============== */
 
 	$(function () {
-		$(document).off('click.modal').on('click.modal.data-api', '[data-toggle="modal"]', function ( e ) {
-			var $this = $(this),
-				href = $this.attr('href'),
-				$target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))), //strip for ie7
-				option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
+		$(document)
+			.off('click.modal')
+			.on('click.modal.data-api', '[data-dismiss="modal"]', function ( e ) {
+				e.preventDefault();
 
-			e.preventDefault();
-			$target
+				$(this)
+					.parents(".modal:first")
+					.modal("hide");
+			})
+			.on('click.modal.data-api', '[data-toggle="modal"]', function ( e ) {
+				var $this = $(this),
+					href = $this.attr('href'),
+					$target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))), //strip for ie7
+					option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
+	
+				e.preventDefault();
+				$target
 				.modal(option)
 				.one('hide', function () {
 					$this.focus();
