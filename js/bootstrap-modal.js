@@ -136,7 +136,7 @@
 			}
 
 			var modalOverflow = $(window).height() - 10 < this.$element.height();
-            
+
 			if (modalOverflow || this.options.modalOverflow) {
 				this.$element
 					.css('margin-top', 0)
@@ -153,13 +153,13 @@
 
 			if (this.isShown && this.options.consumeTab) {
 				this.$element.on('keydown.tabindex.modal', '[data-tabindex]', function (e) {
-			    	if (e.keyCode && e.keyCode == 9){
+					if (e.keyCode && e.keyCode == 9){
 						var $next = $(this),
 							$rollover = $(this);
 
 						that.$element.find('[data-tabindex]:enabled:not([readonly])').each(function (e) {
 							if (!e.shiftKey){
-						 		$next = $next.data('tabindex') < $(this).data('tabindex') ?
+								$next = $next.data('tabindex') < $(this).data('tabindex') ?
 									$next = $(this) :
 									$rollover = $(this);
 							} else {
@@ -185,11 +185,17 @@
 			if (this.isShown && this.options.keyboard) {
 				if (!this.$element.attr('tabindex')) this.$element.attr('tabindex', -1);
 
-				this.$element.on('keyup.dismiss.modal', function (e) {
-					e.which == 27 && that.hide();
-				});
+				this.$element
+					.on('keyup.dismiss.modal', function (e) {
+						if (e.which === 27) {
+							e.preventDefault();
+							e.stopPropagation();
+
+							that.hide();
+						}
+					});
 			} else if (!this.isShown) {
-				this.$element.off('keyup.dismiss.modal')
+				this.$element.off('keyup.dismiss.modal');
 			}
 		},
 
@@ -265,15 +271,15 @@
 		focus: function () {
 			var $focusElem = this.$element.find(this.options.focusOn);
 
-			$focusElem = $focusElem.length ? $focusElem : this.$element;
+			$focusElem = $focusElem.length > 0 ? $focusElem[0] : this.$element[0];
 
 			$focusElem.focus();
 		},
 
-		attention: function (){
+		attention: function () {
 			// NOTE: transitionEnd with keyframes causes odd behaviour
 
-			if (this.options.attentionAnimation){
+			if (this.options.attentionAnimation) {
 				this.$element
 					.removeClass('animated')
 					.removeClass(this.options.attentionAnimation);
@@ -286,7 +292,6 @@
 						.addClass(that.options.attentionAnimation);
 				}, 0);
 			}
-
 
 			this.focus();
 		},
@@ -375,14 +380,14 @@
 					href = $this.attr('href'),
 					$target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))), //strip for ie7
 					option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
-	
+
 				e.preventDefault();
 				$target
-				.modal(option)
-				.one('hide', function () {
-					$this.focus();
-				})
-		});
+					.modal(option)
+					.one('hide', function () {
+						$this.focus();
+					})
+			});
 	});
 
 }(window.jQuery);
