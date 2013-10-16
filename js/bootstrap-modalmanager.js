@@ -1,5 +1,6 @@
 /* ===========================================================
  * bootstrap-modalmanager.js v2.2.0
+ * http://jschr.github.io/bootstrap-modal/
  * ===========================================================
  * Copyright 2012 Jordan Schroter.
  *
@@ -81,12 +82,12 @@
 					that.backdrop(modal, function () {
 						modal.$element.show();
 
-						if (transition) {       
-							//modal.$element[0].style.display = 'run-in';       
+						if (transition) {
+							//modal.$element[0].style.display = 'run-in';
 							modal.$element[0].offsetWidth;
-							//modal.$element.one($.support.transition.end, function () { modal.$element[0].style.display = 'block' });  
+							//modal.$element.one($.support.transition.end, function () { modal.$element[0].style.display = 'block' });
 						}
-						
+
 						modal.layout();
 
 						modal.$element
@@ -163,15 +164,22 @@
 		},
 
 		setFocus: function () {
-			var topModal;
+			var topModal,
+				_self = this;
 
-			for (var i = 0; i < this.stack.length; i++){
-				if (this.stack[i].isShown) topModal = this.stack[i];
+			if (this.stack.length === 0) {
+				topModal = _self.$element.find("input[type!=hidden]:enabled:first,select:enabled:first");
+			} else {
+				for (var i = 0; i < this.stack.length; i++){
+					if (this.stack[i].isShown) topModal = this.stack[i];
+				}
 			}
 
 			if (!topModal) return;
 
-			topModal.focus();
+			setTimeout(function () {
+				topModal.focus();
+			}, 50);
 
 		},
 
