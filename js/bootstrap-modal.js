@@ -17,7 +17,6 @@
  * limitations under the License.
  * ========================================================== */
 
-
 !function ($) {
 
 	"use strict"; // jshint ;_;
@@ -80,6 +79,10 @@
 			e = $.Event('hide');
 
 			this.$element.trigger(e);
+
+			if (this.options.onHide !== null) {
+				eval(this.options.onHide);
+			}
 
 			if (!this.isShown || e.isDefaultPrevented()) return (this.isShown = false);
 
@@ -351,6 +354,7 @@
 		modalOverflow: false,
 		consumeTab: true,
 		focusOn: null,
+		onHide : null,
 		replace: false,
 		resize: false,
 		attentionAnimation: 'shake',
@@ -382,6 +386,7 @@
 					option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data());
 
 				e.preventDefault();
+
 				$target
 					.modal(option)
 					.one('hide', function () {
